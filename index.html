@@ -1,89 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMSH YouTube PWA</title>
-    <link rel="manifest" href="manifest.json">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
-            color: white;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #oracle-logo {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #00d4ff, transparent);
-            border-radius: 50%;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px #00d4ff;
-        }
-        input {
-            width: 90%;
-            padding: 12px;
-            border-radius: 25px;
-            border: 1px solid #00d4ff;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            outline: none;
-        }
-        .video-card {
-            width: 100%;
-            margin-top: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #333;
-        }
-        iframe {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>YouTube Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header class="topbar">
+    <div class="logo">YouTube Lite</div>
+    <form id="search-form">
+      <input id="search-input" type="text" placeholder="Поиск видео..." autocomplete="off">
+      <button type="submit">Найти</button>
+    </form>
+  </header>
 
-    <div id="oracle-logo"></div>
-    <input type="text" id="search" placeholder="Поиск через Оракул...">
-    
-    <div id="feed">
-        <!-- Сюда будут подгружаться видео -->
-    </div>
+  <main>
+    <section id="player-section">
+      <iframe id="player" src="" frameborder="0" allowfullscreen></iframe>
+    </section>
 
-    <script>
-        // Простая логика поиска через Invidious API
-        const searchInput = document.getElementById('search');
-        searchInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const query = encodeURIComponent(this.value);
-                // Используем открытый инстанс Invidious
-                const apiLink = `https://invidious.snopyta.org/api/v1/search?q=${query}`;
-                
-                fetch(apiLink)
-                    .then(res => res.json())
-                    .then(data => {
-                        const feed = document.getElementById('feed');
-                        feed.innerHTML = data.map(v => `
-                            <div class="video-card">
-                                <iframe src="https://invidious.snopyta.org/embed/${v.videoId}" allowfullscreen></iframe>
-                                <p style="padding:10px">${v.title}</p>
-                            </div>
-                        `).join('');
-                    });
-            }
-        });
+    <section id="results"></section>
+  </main>
 
-        // Регистрация Service Worker для PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
